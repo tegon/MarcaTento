@@ -4,9 +4,11 @@ import React, {
   StyleSheet,
   Component,
   ListView,
-  TouchableHighlight
+  TouchableHighlight,
+  Alert
 } from 'react-native';
 
+import Game from './Game';
 import baseStyles from '../baseStyles';
 
 export default class UserList extends Component {
@@ -29,7 +31,26 @@ export default class UserList extends Component {
     );
   }
 
+  _refuseGame() {
+
+  }
+
+  _acceptGame() {
+    this.props.navigator.push({
+      title: 'Game',
+      component: Game
+    });
+  }
+
   _onClick() {
+    Alert.alert(
+      'Truco ladrão!',
+      'leo tá te chamando pro truco. Vai correr?',
+      [
+        { text: 'Correr', style: 'cancel', onPress: this._refuseGame.bind(this) },
+        { text: 'Desce!', onPress: this._acceptGame.bind(this) },
+      ]
+    );
   }
 
   _renderRow(rowData, sectionID, rowID) {

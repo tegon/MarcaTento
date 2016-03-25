@@ -12,6 +12,7 @@ import React, {
 import RouteMapper from '../RouteMapper';
 import SignIn from './SignIn';
 import UserList from './UserList';
+import Game from './Game';
 import baseStyles from '../baseStyles';
 
 export default class TrucoMarrecoApp extends Component {
