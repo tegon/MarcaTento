@@ -19,7 +19,7 @@ export default class TrucoMarrecoApp extends Component {
       <Navigator
         style={styles.container}
         initialRoute={{ component: SignIn }}
-        configureScene={() => Navigator.SceneConfigs.FadeAndroid}
+        configureScene={() => Navigator.SceneConfigs.PushFromRight}
         renderScene={RouteMapper}
       />
     );
