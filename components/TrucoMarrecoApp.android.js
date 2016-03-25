@@ -12,12 +12,13 @@ import React, {
 import RouteMapper from '../RouteMapper';
 import SignIn from './SignIn';
 import UserList from './UserList';
+import baseStyles from '../baseStyles';
 
 export default class TrucoMarrecoApp extends Component {
   render() {
     return (
       <Navigator
-        style={styles.container}
+        style={baseStyles.container}
         initialRoute={{ component: SignIn }}
         configureScene={() => Navigator.SceneConfigs.PushFromRight}
         renderScene={RouteMapper}
@@ -25,9 +26,3 @@ export default class TrucoMarrecoApp extends Component {
     );
   }
 }
-
-var styles = StyleSheet.create({
-  container: {
-    flex: 1
-  }
-});

@@ -6,6 +6,8 @@ import React, {
   ListView
 } from 'react-native';
 
+import baseStyles from '../baseStyles';
+
 export default class UserList extends Component {
   constructor() {
     super();
@@ -17,11 +19,11 @@ export default class UserList extends Component {
 
   render() {
     return(
-      <View style={styles.container}>
-        <Text style={styles.title}>Marrecos</Text>
+      <View style={[baseStyles.container, styles.container]}>
+        <Text style={[baseStyles.title, styles.title]}>Marrecos</Text>
         <ListView
           dataSource={this.state.dataSource}
-          renderRow={(rowData) => <Text style={[styles.title, styles.subtitle]}>{rowData}</Text>}/>
+          renderRow={(rowData) => <Text style={[baseStyles.title, styles.title, baseStyles.subtitle]}>{rowData}</Text>}/>
       </View>
     );
   }
@@ -29,19 +31,10 @@ export default class UserList extends Component {
 
 var styles = StyleSheet.create({
   container: {
-    flex: 1,
-    backgroundColor: 'white',
     padding: 10
   },
   title: {
     fontSize: 30,
-    fontWeight: 'bold',
-    color: 'black',
-    fontFamily: 'Trebuchet MS',
     margin: 10
   },
-  subtitle: {
-    fontSize: 15,
-    fontWeight: 'normal'
-  }
 });

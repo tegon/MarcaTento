@@ -1,7 +1,6 @@
 import React, {
   View,
   Text,
-  Platform,
   StyleSheet,
   Component,
   TextInput,
@@ -10,6 +9,7 @@ import React, {
 } from 'react-native';
 
 import UserList from './UserList';
+import baseStyles from '../baseStyles';
 
 export default class SignIn extends Component {
   _onChangeText() {
@@ -25,17 +25,17 @@ export default class SignIn extends Component {
 
   render() {
     return(
-      <View style={styles.container}>
+      <View style={[baseStyles.container, styles.container]}>
         <Image style={styles.logoCircle} source={require('../img/logo_circle.png')} />
-        <Text style={styles.title}>Pronto pra jogar, marreco?</Text>
-        <Text style={styles.title}>Se perder no zero tem que passar embaixo da mesa hein!</Text>
-        <Text style={[styles.title, styles.subtitle]}>Escreve seu nome aí, e bora trucar!</Text>
+        <Text style={[baseStyles.title, styles.title]}>Pronto pra jogar, marreco?</Text>
+        <Text style={[baseStyles.title, styles.title]}>Se perder no zero tem que passar embaixo da mesa hein!</Text>
+        <Text style={[baseStyles.title, styles.title, baseStyles.subtitle]}>Escreve seu nome aí, e bora trucar!</Text>
         <TextInput
           style={styles.nameInput}
           autoFocus={true}
           onChangeText={this._onChangeText.bind(this)}/>
-        <TouchableHighlight style={styles.button} onPress={this._onClick.bind(this)}  underlayColor='#FFE082'>
-          <Text style={styles.buttonText}>TRUUUCOOOO!</Text>
+        <TouchableHighlight style={[baseStyles.button, styles.button]} onPress={this._onClick.bind(this)}  underlayColor='#FFE082'>
+          <Text style={baseStyles.buttonText}>TRUUUCOOOO!</Text>
         </TouchableHighlight>
       </View>
     );
@@ -44,26 +44,8 @@ export default class SignIn extends Component {
 
 var styles = StyleSheet.create({
   container: {
-    flex: 1,
-    backgroundColor: 'white',
     padding: 10,
     alignItems:'center'
-  },
-  logoCircle: {
-    height: 200,
-    width: 200
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    textAlign: 'center',
-    color: 'black',
-    fontFamily: 'Trebuchet MS',
-    margin: 10
-  },
-  subtitle: {
-    fontSize: 15,
-    fontWeight: 'normal'
   },
   nameInput: {
     height: 40,
@@ -72,20 +54,18 @@ var styles = StyleSheet.create({
     borderWidth: 1,
     marginTop: 20
   },
-  buttonText: {
-    fontSize: 18,
-    color: 'white',
-    alignSelf: 'center'
+  title: {
+    textAlign: 'center',
+    margin: 10
+  },
+  logoCircle: {
+    height: 200,
+    width: 200
   },
   button: {
-    height: 36,
-    backgroundColor: '#FFC107',
-    borderColor: '#FFCA28',
-    borderWidth: 1,
-    borderRadius: 5,
     marginBottom: 10,
     alignSelf: 'stretch',
     justifyContent: 'center',
     marginTop: 20
-  }
+  },
 });
