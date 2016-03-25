@@ -7,6 +7,7 @@ import React, {
 } from 'react-native';
 
 import baseStyles from '../baseStyles';
+import ScoreButton from './ScoreButton';
 
 export default class Game extends Component {
   _onClick() {
@@ -25,22 +26,12 @@ export default class Game extends Component {
           <Text style={baseStyles.title}>leo</Text>
           <Text style={baseStyles.title}>gordo</Text>
         </View>
-        <View style={baseStyles.container}>
-          <TouchableHighlight style={[baseStyles.button, styles.button]} onPress={this._onClick.bind(this)}  underlayColor='#FFE082'>
-            <Text style={baseStyles.buttonText}>+1</Text>
-          </TouchableHighlight>
-          <TouchableHighlight style={[baseStyles.button, styles.button]} onPress={this._onClick.bind(this)}  underlayColor='#FFE082'>
-            <Text style={baseStyles.buttonText}>+3</Text>
-          </TouchableHighlight>
-          <TouchableHighlight style={[baseStyles.button, styles.button]} onPress={this._onClick.bind(this)}  underlayColor='#FFE082'>
-            <Text style={baseStyles.buttonText}>+6</Text>
-          </TouchableHighlight>
-          <TouchableHighlight style={[baseStyles.button, styles.button]} onPress={this._onClick.bind(this)}  underlayColor='#FFE082'>
-            <Text style={baseStyles.buttonText}>+9</Text>
-          </TouchableHighlight>
-          <TouchableHighlight style={[baseStyles.button, styles.button]} onPress={this._onClick.bind(this)}  underlayColor='#FFE082'>
-            <Text style={baseStyles.buttonText}>+12</Text>
-          </TouchableHighlight>
+        <View style={[baseStyles.container, styles.buttonsContainer]}>
+          <ScoreButton score={'+1'} onClick={this._onClick.bind(this)} />
+          <ScoreButton score={'+3'} onClick={this._onClick.bind(this)} />
+          <ScoreButton score={'+6'} onClick={this._onClick.bind(this)} />
+          <ScoreButton score={'+9'} onClick={this._onClick.bind(this)} />
+          <ScoreButton score={'+12'} onClick={this._onClick.bind(this)} />
         </View>
       </View>
     );
@@ -54,11 +45,18 @@ var styles = StyleSheet.create({
     padding: 10
   },
   scoreContainer: {
+    marginTop: 30,
     flex: .05,
     justifyContent: 'space-around'
   },
   usersContainer: {
-    flex: .80,
+    flex: .15,
     justifyContent: 'space-around'
+  },
+  buttonsContainer: {
+    flex: .50,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    flexWrap: 'wrap'
   }
 });
