@@ -9,6 +9,8 @@ import React, {
   TouchableHighlight
 } from 'react-native';
 
+import UserList from './UserList';
+
 export default class SignIn extends Component {
   _onChangeText() {
     console.log('onChangeText');
@@ -16,6 +18,17 @@ export default class SignIn extends Component {
 
   _onClick() {
     console.log('_onClick');
+    if (Platform.OS === 'ios') {
+      this.props.navigator.push({
+        title: 'Marrecos',
+        component: UserList
+      });
+    } else if (Platform.OS === 'android') {
+      this.props.navigator.push({
+        title: 'Marrecos',
+        name: 'UserList'
+      });
+    }
   }
 
   render() {

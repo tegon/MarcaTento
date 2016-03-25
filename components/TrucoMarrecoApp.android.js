@@ -10,6 +10,7 @@ import React, {
 } from 'react-native';
 
 import SignIn from './SignIn';
+import UserList from './UserList';
 
 var _navigator;
 BackAndroid.addEventListener('hardwareBackPress', () => {
@@ -24,6 +25,8 @@ var RouteMapper = function(route, navigationOperations, onComponentRef) {
   _navigator = navigationOperations;
   if (route.name === 'SignIn') {
     return(<SignIn navigator={navigationOperations} />);
+  } else if (route.name === 'UserList') {
+    return(<UserList navigator={navigationOperations} />);
   }
 };
 
