@@ -23,21 +23,15 @@ BackAndroid.addEventListener('hardwareBackPress', () => {
 
 var RouteMapper = function(route, navigationOperations, onComponentRef) {
   _navigator = navigationOperations;
-  if (route.name === 'SignIn') {
-    return(<SignIn navigator={navigationOperations} />);
-  } else if (route.name === 'UserList') {
-    return(<UserList navigator={navigationOperations} />);
-  }
+  return(<route.component navigator={navigationOperations} />);
 };
 
 export default class TrucoMarrecoApp extends Component {
   render() {
-    var initialRoute = {name: 'SignIn'};
-
     return (
       <Navigator
         style={styles.container}
-        initialRoute={initialRoute}
+        initialRoute={{ component: SignIn }}
         configureScene={() => Navigator.SceneConfigs.FadeAndroid}
         renderScene={RouteMapper}
       />
@@ -47,7 +41,6 @@ export default class TrucoMarrecoApp extends Component {
 
 var styles = StyleSheet.create({
   container: {
-    flex: 1,
-    backgroundColor: '#FFC107'
+    flex: 1
   }
 });

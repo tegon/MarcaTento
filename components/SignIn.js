@@ -18,17 +18,10 @@ export default class SignIn extends Component {
 
   _onClick() {
     console.log('_onClick');
-    if (Platform.OS === 'ios') {
-      this.props.navigator.push({
-        title: 'Marrecos',
-        component: UserList
-      });
-    } else if (Platform.OS === 'android') {
-      this.props.navigator.push({
-        title: 'Marrecos',
-        name: 'UserList'
-      });
-    }
+    this.props.navigator.push({
+      title: 'Marrecos',
+      component: UserList
+    });
   }
 
   render() {
