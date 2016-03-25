@@ -18,13 +18,13 @@ export default class Game extends Component {
     return(
       <View style={baseStyles.container}>
         <View style={[baseStyles.container, styles.container, styles.scoreContainer]}>
-          <Text style={baseStyles.title}>10</Text>
+          <Text style={[baseStyles.title, styles.title]}>10</Text>
           <Text style={baseStyles.title}>x</Text>
-          <Text style={baseStyles.title}>2</Text>
+          <Text style={[baseStyles.title, styles.title]}>2</Text>
         </View>
         <View style={[baseStyles.container, styles.container, styles.usersContainer]}>
-          <Text style={baseStyles.title}>leo</Text>
-          <Text style={baseStyles.title}>gordo</Text>
+          <Text style={[baseStyles.title, styles.title]}>leo</Text>
+          <Text style={[baseStyles.title, styles.title]}>gordo</Text>
         </View>
         <View style={[baseStyles.container, styles.buttonsContainer]}>
           <ScoreButton score={'+1'} onClick={this._onClick.bind(this)} />
@@ -58,5 +58,8 @@ var styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     flexWrap: 'wrap'
+  },
+  title: {
+    fontSize: 30
   }
 });
