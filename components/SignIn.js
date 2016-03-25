@@ -17,7 +17,6 @@ export default class SignIn extends Component {
   }
 
   _onClick() {
-    console.log('_onClick');
     this.props.navigator.push({
       title: 'Marrecos',
       component: UserList
@@ -33,6 +32,7 @@ export default class SignIn extends Component {
         <Text style={[styles.title, styles.subtitle]}>Escreve seu nome aí, e bora trucar!</Text>
         <TextInput
           style={styles.nameInput}
+          autoFocus={true}
           onChangeText={this._onChangeText.bind(this)}/>
         <TouchableHighlight style={styles.button} onPress={this._onClick.bind(this)}  underlayColor='#FFE082'>
           <Text style={styles.buttonText}>TRUUUCOOOO!</Text>
