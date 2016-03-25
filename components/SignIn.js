@@ -21,14 +21,14 @@ export default class SignIn extends Component {
   render() {
     return(
       <View style={styles.container}>
-        <Image source={require('../img/title.png')} />
+        <Image style={styles.logoCircle} source={require('../img/logo_circle.png')} />
         <Text style={styles.title}>Pronto pra jogar, marreco?</Text>
         <Text style={styles.title}>Se perder no zero tem que passar embaixo da mesa hein!</Text>
         <Text style={[styles.title, styles.subtitle]}>Escreve seu nome aí, e bora trucar!</Text>
         <TextInput
           style={styles.nameInput}
           onChangeText={this._onChangeText.bind(this)}/>
-        <TouchableHighlight style={styles.button} onPress={this._onClick.bind(this)}  underlayColor='#424242'>
+        <TouchableHighlight style={styles.button} onPress={this._onClick.bind(this)}  underlayColor='#FFE082'>
           <Text style={styles.buttonText}>TRUUUCOOOO!</Text>
         </TouchableHighlight>
       </View>
@@ -39,9 +39,13 @@ export default class SignIn extends Component {
 var styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FFC107',
+    backgroundColor: 'white',
     padding: 10,
     alignItems:'center'
+  },
+  logoCircle: {
+    height: 200,
+    width: 200
   },
   title: {
     fontSize: 20,
@@ -58,7 +62,8 @@ var styles = StyleSheet.create({
   nameInput: {
     height: 40,
     borderRadius: 5,
-    backgroundColor: 'white',
+    borderColor: '#FFCA28',
+    borderWidth: 1,
     marginTop: 20
   },
   buttonText: {
@@ -68,8 +73,8 @@ var styles = StyleSheet.create({
   },
   button: {
     height: 36,
-    backgroundColor: '#000000',
-    borderColor: '#212121',
+    backgroundColor: '#FFC107',
+    borderColor: '#FFCA28',
     borderWidth: 1,
     borderRadius: 5,
     marginBottom: 10,
