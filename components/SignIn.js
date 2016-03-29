@@ -10,16 +10,26 @@ import React, {
 
 import UserList from './UserList';
 import baseStyles from '../baseStyles';
+import FirebaseRef from '../FirebaseRef';
 
 export default class SignIn extends Component {
-  _onChangeText() {
-    console.log('onChangeText');
+  constructor() {
+    super();
+    this.state = {
+      user: {}
+    };
+  }
+
+  _onChangeText(text) {
+    this.setState({ user: { name: text } });
   }
 
   _onClick() {
+    FirebaseRef.push('users', { data: this.state.user });
     this.props.navigator.push({
       title: 'Marrecos',
-      component: UserList
+      component: UserList,
+      passProps: { user: this.state.user }
     });
   }
 
@@ -33,6 +43,7 @@ export default class SignIn extends Component {
         <TextInput
           style={styles.nameInput}
           autoFocus={true}
+          value={this.state.user.name}
           onChangeText={this._onChangeText.bind(this)}/>
         <TouchableHighlight style={[baseStyles.button, styles.button]} onPress={this._onClick.bind(this)}  underlayColor='#FFE082'>
           <Text style={baseStyles.buttonText}>TRUUUCOOOO!</Text>
