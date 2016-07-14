@@ -6,7 +6,6 @@ import React, {
   ListView,
   TouchableHighlight,
   Alert
-  
 } from 'react-native';
 
 import Game from './Game';
@@ -25,47 +24,73 @@ export default class UserList extends Component {
   }
 
   componentDidMount() {
-    FirebaseRef.database().ref('users').once('value', (snapshot) => {
-      let value = snapshot.val();
-      let users = [];
+    FirebaseRef.database().ref('users').once('value', this._addUsers.bind(this));
+    FirebaseRef.database().ref('users').on('child_added', this._updateUser.bind(this));
+    FirebaseRef.database().ref('games').on('child_added', this._addGame.bind(this));
+    FirebaseRef.database().ref('games').on('child_changed', this._updateGame.bind(this));
+  }
 
-      Object.keys(value).forEach((key) => {
-        let user = Object.assign(value[key], { uid: key });
-        if (!this._isCurrentUser(user)) {
-          users.push(user);
-        }
-      });
+  componentWillUnmount() {
+    FirebaseRef.database().ref('users').off('value');
+    FirebaseRef.database().ref('users').off('child_added');
+    FirebaseRef.database().ref('games').off('child_added');
+    FirebaseRef.database().ref('games').off('child_changed');
+  }
 
-      this.setState({
-        users: users,
-        dataSource: this.state.dataSource.cloneWithRows(users)
-      });
-    });
+  _addUsers(snapshot) {
+    let value = snapshot.val();
+    let users = [];
 
-    FirebaseRef.database().ref('users').on('child_added', (data) => {
-      let user = Object.assign(data.val(), { uid: data.key });
-      let users = this.state.users;
-
+    Object.keys(value).forEach((key) => {
+      let user = Object.assign(value[key], { uid: key });
       if (!this._isCurrentUser(user)) {
-        users = users.concat(user);
-      }
-
-      this.setState({
-        users: users,
-        dataSource: this.state.dataSource.cloneWithRows(users)
-      })
-    });
-
-    FirebaseRef.database().ref('games').on('child_added', (data) => {
-      if (!this.state.game || this.state.game === 'rejected') {
-        let game = Object.assign(data.val(), { uid: data.key });
-
-        if (game.status === 'pending' && this._isCurrentUser(game.opponent)) {
-          this.setState({ game: game });
-          this._inviteToGame();
-        }
+        users.push(user);
       }
     });
+
+    this.setState({
+      users: users,
+      dataSource: this.state.dataSource.cloneWithRows(users)
+    });
+  }
+
+  _updateUser(data) {
+    let user = Object.assign(data.val(), { uid: data.key });
+    let users = this.state.users;
+
+    if (!this._isCurrentUser(user)) {
+      users = users.concat(user);
+    }
+
+    this.setState({
+      users: users,
+      dataSource: this.state.dataSource.cloneWithRows(users)
+    })
+  }
+
+  _addGame(data) {
+    if (!this.state.game || this.state.game === 'rejected') {
+      let game = Object.assign(data.val(), { uid: data.key });
+
+      if (game.status === 'pending' && this._isCurrentUser(game.opponent)) {
+        this.setState({ game: game });
+        this._inviteToGame();
+      }
+    }
+  }
+
+  _updateGame(data) {
+    let game = Object.assign(data.val(), { uid: data.key });
+
+    if (this.state.game && game.uid === this.state.game.uid && this._isCurrentUser(game.challenger)) {
+
+      if (game.status === 'accepted') {
+        this.setState({ game: game });
+        this._openGame();
+      } else if (game.status === 'refused') {
+        this._refusedGameInvite();
+      }
+    }
   }
 
   render() {
@@ -82,9 +107,9 @@ export default class UserList extends Component {
   _refuseGame() {
     FirebaseRef.database().ref('games/' + this.state.game.uid).update({
       status: 'refused'
-    }.then(value => {
-      this.setState({ game: Object.assign(this.state.game, { status: 'refused' }) });
-    }));
+    }).then(value => {
+      this.setState({ game: null });
+    });
   }
 
   _acceptGame() {
@@ -92,12 +117,15 @@ export default class UserList extends Component {
       status: 'accepted'
     }).then(value => {
       this.setState({ game: Object.assign(this.state.game, { status: 'accepted' }) });
+      this._openGame();
+    });
+  }
 
-      this.props.navigator.replace({
-        title: 'Game',
-        component: Game,
-        passProps: { game: this.state.game }
-      });
+  _openGame() {
+    this.props.navigator.replace({
+      title: 'Game',
+      component: Game,
+      passProps: { game: this.state.game, currentUser: this.props.user }
     });
   }
 
@@ -119,7 +147,7 @@ export default class UserList extends Component {
   }
 
   _isCurrentUser(user) {
-    return this.props.user.username === user.username;
+    return this.props.user.uid === user.uid;
   }
 
   _inviteToGame() {
@@ -135,6 +163,14 @@ export default class UserList extends Component {
         { text: 'Desce!', onPress: this._acceptGame.bind(this) },
       ]
     );
+  }
+
+  _refusedGameInvite() {
+    Alert.alert(
+      'Foi pro monte!',
+      'Lugar de pato é no monte né, correu o marrecão...'
+    );
+    this.setState({ game: null });
   }
 
   _renderRow(rowData, sectionID, rowID) {

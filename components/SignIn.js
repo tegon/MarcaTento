@@ -29,18 +29,20 @@ export default class SignIn extends Component {
       }
     });
 
-    FirebaseRef.auth().onAuthStateChanged(auth => {
-      if (auth) {
-        if (!this.state.user.uid) {
-          let user = Object.assign(this.state.user, { uid: auth.uid });
-          AsyncStorage.setItem('user', JSON.stringify(user));
-          this.setState({ user: user });
-          FirebaseRef.database().ref('users/' + user.uid).set({
-            username: user.username
-          });
-        }
+    FirebaseRef.auth().onAuthStateChanged(this._onAuthStateChanged.bind(this));
+  }
+
+  _onAuthStateChanged(auth) {
+    if (auth) {
+      if (!this.state.user.uid) {
+        let user = Object.assign(this.state.user, { uid: auth.uid });
+        AsyncStorage.setItem('user', JSON.stringify(user));
+        this.setState({ user: user });
+        FirebaseRef.database().ref('users/' + user.uid).set({
+          username: user.username
+        });
       }
-    });
+    }
   }
 
   componentDidUpdate() {
@@ -71,6 +73,8 @@ export default class SignIn extends Component {
         <Text style={[baseStyles.title, styles.title]}>Se perder no zero tem que passar embaixo da mesa hein!</Text>
         <Text style={[baseStyles.title, styles.title, baseStyles.subtitle]}>Escreve seu nome aí, e bora trucar!</Text>
         <TextInput
+          autoCapitalize='none'
+          maxLength={6}
           style={styles.nameInput}
           autoFocus={true}
           value={this.state.user.username}
