@@ -6,37 +6,66 @@ import React, {
   ListView,
   TouchableHighlight,
   Alert
+  
 } from 'react-native';
 
 import Game from './Game';
-import baseStyles from '../baseStyles';
 import FirebaseRef from '../FirebaseRef';
+import baseStyles from '../baseStyles';
 
 export default class UserList extends Component {
   constructor() {
     super();
     var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1.key !== r2.key});
     this.state = {
+      users: [],
       dataSource: ds.cloneWithRows([]),
       game: null
     };
   }
 
   componentDidMount() {
-    this.ref = FirebaseRef.listenTo('users', {
-      context: this,
-      asArray: true,
-      then(data) {
-        let users = data.filter((user) => user.name !== this.props.user.name);
-        this.setState({
-          dataSource: this.state.dataSource.cloneWithRows(users)
-        });
+    FirebaseRef.database().ref('users').once('value', (snapshot) => {
+      let value = snapshot.val();
+      let users = [];
+
+      Object.keys(value).forEach((key) => {
+        let user = Object.assign(value[key], { uid: key });
+        if (!this._isCurrentUser(user)) {
+          users.push(user);
+        }
+      });
+
+      this.setState({
+        users: users,
+        dataSource: this.state.dataSource.cloneWithRows(users)
+      });
+    });
+
+    FirebaseRef.database().ref('users').on('child_added', (data) => {
+      let user = Object.assign(data.val(), { uid: data.key });
+      let users = this.state.users;
+
+      if (!this._isCurrentUser(user)) {
+        users = users.concat(user);
+      }
+
+      this.setState({
+        users: users,
+        dataSource: this.state.dataSource.cloneWithRows(users)
+      })
+    });
+
+    FirebaseRef.database().ref('games').on('child_added', (data) => {
+      if (!this.state.game || this.state.game === 'rejected') {
+        let game = Object.assign(data.val(), { uid: data.key });
+
+        if (game.status === 'pending' && this._isCurrentUser(game.opponent)) {
+          this.setState({ game: game });
+          this._inviteToGame();
+        }
       }
     });
-  }
-
-  componentWillUnmount(){
-    FirebaseRef.removeBinding(this.ref);
   }
 
   render() {
@@ -51,42 +80,56 @@ export default class UserList extends Component {
   }
 
   _refuseGame() {
-
+    FirebaseRef.database().ref('games/' + this.state.game.uid).update({
+      status: 'refused'
+    }.then(value => {
+      this.setState({ game: Object.assign(this.state.game, { status: 'refused' }) });
+    }));
   }
 
   _acceptGame() {
-    this.props.navigator.push({
-      title: 'Game',
-      component: Game
+    FirebaseRef.database().ref('games/' + this.state.game.uid).update({
+      status: 'accepted'
+    }).then(value => {
+      this.setState({ game: Object.assign(this.state.game, { status: 'accepted' }) });
+
+      this.props.navigator.replace({
+        title: 'Game',
+        component: Game,
+        passProps: { game: this.state.game }
+      });
     });
   }
 
-  _onClick(sectionID, rowID) {
-    let opponent = this.state.dataSource._dataBlob[sectionID][rowID];
-    FirebaseRef.push('games', {
-      data: {
-        challenger: this.props.user,
-        opponent: opponent,
-        status: 'pending'
-      },
-      then(data) {
-        console.log('push', data)
-      }
+  _onClick(opponent) {
+    var game = {
+      challenger: this.props.user,
+      opponent: opponent,
+      status: 'pending'
+    };
+
+    FirebaseRef.database().ref('games').push(game).then(value => {
+      this.setState({ game: Object.assign(game, { uid: value.key })});
+
+      Alert.alert(
+        'Pede seeeis!',
+        `Esperando resposta do marreco: ${this.state.game.opponent.username}`
+      );
     });
   }
 
   _isCurrentUser(user) {
-    return this.props.user.name === user.name;
+    return this.props.user.username === user.username;
   }
 
   _inviteToGame() {
-    if (this._isCurrentUser(this.state.game.opponent)) {
+    if (this._isCurrentUser(this.state.game.challenger)) {
       return;
     }
 
     Alert.alert(
       'Truco ladrão!',
-      `${this.state.game.opponent} tá te chamando pro truco. Vai correr?`,
+      `${this.state.game.challenger.username} tá te chamando pro truco. Vai correr?`,
       [
         { text: 'Correr', style: 'cancel', onPress: this._refuseGame.bind(this) },
         { text: 'Desce!', onPress: this._acceptGame.bind(this) },
@@ -97,8 +140,8 @@ export default class UserList extends Component {
   _renderRow(rowData, sectionID, rowID) {
     return(
       <View style={styles.row}>
-        <Text style={[baseStyles.title, styles.title, baseStyles.subtitle]}>{rowData.name}</Text>
-        <TouchableHighlight style={[baseStyles.button, styles.button]} onPress={() => this._onClick(sectionID, rowID)}  underlayColor='#FFE082'>
+        <Text style={[baseStyles.title, styles.title, baseStyles.subtitle]}>{rowData.username}</Text>
+        <TouchableHighlight style={[baseStyles.button, styles.button]} onPress={() => this._onClick(rowData)}  underlayColor='#FFE082'>
           <Text style={baseStyles.buttonText}>Truco nele!</Text>
         </TouchableHighlight>
       </View>

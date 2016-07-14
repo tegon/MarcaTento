@@ -10,6 +10,10 @@ import baseStyles from '../baseStyles';
 import ScoreButton from './ScoreButton';
 
 export default class Game extends Component {
+  componentDidMount() {
+    console.log(this.props.game);
+  }
+
   _onClick() {
 
   }

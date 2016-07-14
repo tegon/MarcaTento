@@ -5,7 +5,9 @@ import React, {
   Component,
   TextInput,
   Image,
-  TouchableHighlight
+  TouchableHighlight,
+  AsyncStorage,
+  TouchableNativeFeedback,
 } from 'react-native';
 
 import UserList from './UserList';
@@ -20,17 +22,45 @@ export default class SignIn extends Component {
     };
   }
 
+  componentDidMount() {
+    AsyncStorage.getItem('user', (err, result) => {
+      if (result) {
+        this.setState({ user: JSON.parse(result) });
+      }
+    });
+
+    FirebaseRef.auth().onAuthStateChanged(auth => {
+      if (auth) {
+        if (!this.state.user.uid) {
+          let user = Object.assign(this.state.user, { uid: auth.uid });
+          AsyncStorage.setItem('user', JSON.stringify(user));
+          this.setState({ user: user });
+          FirebaseRef.database().ref('users/' + user.uid).set({
+            username: user.username
+          });
+        }
+      }
+    });
+  }
+
+  componentDidUpdate() {
+    if (this.state.user.uid && this.state.user.username) {
+      this.props.navigator.replace({
+        title: 'Marrecos',
+        component: UserList,
+        passProps: { user: this.state.user }
+      });
+    }
+  }
+
   _onChangeText(text) {
-    this.setState({ user: { name: text } });
+    this.setState({ user: { username: text } });
   }
 
   _onClick() {
-    FirebaseRef.push('users', { data: this.state.user });
-    this.props.navigator.push({
-      title: 'Marrecos',
-      component: UserList,
-      passProps: { user: this.state.user }
-    });
+    if (this.state.user.username) {
+      FirebaseRef.auth().signInAnonymously();
+    }
   }
 
   render() {
@@ -43,7 +73,7 @@ export default class SignIn extends Component {
         <TextInput
           style={styles.nameInput}
           autoFocus={true}
-          value={this.state.user.name}
+          value={this.state.user.username}
           onChangeText={this._onChangeText.bind(this)}/>
         <TouchableHighlight style={[baseStyles.button, styles.button]} onPress={this._onClick.bind(this)}  underlayColor='#FFE082'>
           <Text style={baseStyles.buttonText}>TRUUUCOOOO!</Text>

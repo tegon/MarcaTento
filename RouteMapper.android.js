@@ -13,7 +13,7 @@ BackAndroid.addEventListener('hardwareBackPress', () => {
 
 var RouteMapper = function(route, navigationOperations, onComponentRef) {
   _navigator = navigationOperations;
-  return(<route.component navigator={navigationOperations} />);
+  return(<route.component navigator={navigationOperations} {...route.passProps} />);
 };
 
 export default RouteMapper;
