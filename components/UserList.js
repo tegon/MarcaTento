@@ -11,6 +11,7 @@ import React, {
 import Game from './Game';
 import FirebaseRef from '../FirebaseRef';
 import baseStyles from '../baseStyles';
+import Button from './Button';
 
 export default class UserList extends Component {
   constructor() {
@@ -177,9 +178,7 @@ export default class UserList extends Component {
     return(
       <View style={styles.row}>
         <Text style={[baseStyles.title, styles.title, baseStyles.subtitle]}>{rowData.username}</Text>
-        <TouchableHighlight style={[baseStyles.button, styles.button]} onPress={() => this._onClick(rowData)}  underlayColor='#FFE082'>
-          <Text style={baseStyles.buttonText}>Truco nele!</Text>
-        </TouchableHighlight>
+        <Button text='Truco nele!' onPress={() => this._onClick(rowData)} buttonStyle={styles.button} />
       </View>
     );
   }
@@ -191,13 +190,16 @@ var styles = StyleSheet.create({
   },
   row: {
     flexDirection: 'row',
-    justifyContent: 'space-between'
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    height: 60
   },
   title: {
     fontSize: 30,
     margin: 10
   },
   button: {
-    height: 30
+    height: 40,
+    padding: 10
   }
 });

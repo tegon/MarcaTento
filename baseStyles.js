@@ -4,6 +4,7 @@ import React, {
 } from 'react-native';
 
 var fontFamily = Platform.OS === 'ios' ? 'Trebuchet MS' : 'Roboto';
+var buttonHeight = Platform.OS === 'ios' ? 36 : 50;
 var baseStyles = StyleSheet.create({
   container: {
     flex: 1,
@@ -20,16 +21,18 @@ var baseStyles = StyleSheet.create({
     fontWeight: 'normal'
   },
   buttonText: {
-    fontSize: 18,
     color: 'white',
-    alignSelf: 'center'
+    fontSize: 16,
+    fontWeight: 'bold'
   },
   button: {
-    height: 36,
     backgroundColor: '#FFC107',
     borderColor: '#FFCA28',
     borderWidth: 1,
-    borderRadius: 5
+    borderRadius: 2,
+    height: buttonHeight,
+    alignItems: 'center',
+    justifyContent: 'center',
   }
 });
 

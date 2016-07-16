@@ -12,6 +12,7 @@ import React, {
 
 import UserList from './UserList';
 import baseStyles from '../baseStyles';
+import Button from './Button';
 import FirebaseRef from '../FirebaseRef';
 
 export default class SignIn extends Component {
@@ -79,9 +80,7 @@ export default class SignIn extends Component {
           autoFocus={true}
           value={this.state.user.username}
           onChangeText={this._onChangeText.bind(this)}/>
-        <TouchableHighlight style={[baseStyles.button, styles.button]} onPress={this._onClick.bind(this)}  underlayColor='#FFE082'>
-          <Text style={baseStyles.buttonText}>TRUUUCOOOO!</Text>
-        </TouchableHighlight>
+        <Button text='TRUUUCOOOO!' onPress={this._onClick.bind(this)} buttonStyle={styles.button} />
       </View>
     );
   }
@@ -110,7 +109,6 @@ var styles = StyleSheet.create({
   button: {
     marginBottom: 10,
     alignSelf: 'stretch',
-    justifyContent: 'center',
     marginTop: 20
   },
 });
