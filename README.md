@@ -3,4 +3,6 @@
 
 :clubs: Marcador de tentos para truco em tempo real
 
-![Exemplo](example.gif)
+===
+
+![Exemplo](game-example.gif)
